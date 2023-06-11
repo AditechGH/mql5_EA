@@ -18,6 +18,10 @@
         "*.mq5": "cpp"
     },
     "C_Cpp.default.forcedInclude": [
+<<<<<<< HEAD
         "c:\\Users\\mac\\.vscode\\extensions\\l-i-v.mql-tools-2.0.2\\data\\mql5_en.mqh"
+=======
+        "c:\\Users\\masho\\.vscode\\extensions\\l-i-v.mql-tools-2.0.2\\data\\mql5_en.mqh"
+>>>>>>> 0dc59971e4a1d9ffd2bc0ba38a4a34cea4707c7a
     ]
 }
