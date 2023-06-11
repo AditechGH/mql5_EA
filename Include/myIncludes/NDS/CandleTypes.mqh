@@ -7,10 +7,12 @@
 //+------------------------------------------------------------------+
 #include <myIncludes\NDS\Definitions.mqh>
 
+
+//+------------------------------------------------------------------+
+//|  Class CCandleTypes                                              |
+//+------------------------------------------------------------------+
 class CCandleTypes 
 {
-    private:
-
     public:
         void        CCandleTypes();
         void        ~CCandleTypes();
@@ -19,13 +21,13 @@ class CCandleTypes
 
 
   // constructor
-void CCandlePatterns::CCandleTypes(void) {};
+void CCandleTypes::CCandleTypes(void) {};
 
 // deconstructor
-void CCandlePatterns::~CCandleTypes(void) {};
+void CCandleTypes::~CCandleTypes(void) {};
 
 // Function of recognition of candlestick type                      
-bool CCandlePatterns::RecognizeCandle(ENUM_TIMEFRAMES period, int start_position, int aver_period, CANDLE_STRUCTURE &res)
+bool CCandleTypes::RecognizeCandle(ENUM_TIMEFRAMES period, int start_position, int aver_period, CANDLE_STRUCTURE &res)
 {
     MqlRates rates[];
     // Get data of previous candlesticks
@@ -83,8 +85,10 @@ bool CCandlePatterns::RecognizeCandle(ENUM_TIMEFRAMES period, int start_position
         res.type = (res.type == CAND_LONG) ? res.type = CAND_MARIBOZU_LONG : res.type = CAND_MARIBOZU;
     // hammer
     if (shade_low > res.bodysize * 2 && shade_high < res.bodysize * 0.1) res.type = CAND_HAMMER;
-    // inverates hammer
+    if (res.type == CAND_HAMMER && shade_low > sum * 1.3) res.type = CAND_HAMMER_LONG;
+    // inverted hammer
     if (shade_low < res.bodysize * 0.1 && shade_high > res.bodysize * 2) res.type = CAND_INVERT_HAMMER;
+    if (res.type == CAND_INVERT_HAMMER && shade_high > sum * 1.3) res.type = CAND_INVERT_HAMMER_LONG;
     // spinning top
     if (res.type == CAND_SHORT && shade_low > res.bodysize && shade_high > res.bodysize) res.type = CAND_SPIN_TOP;
     ArrayFree(rates);

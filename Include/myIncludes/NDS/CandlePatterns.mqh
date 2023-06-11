@@ -26,7 +26,7 @@ class CCandlePatterns : CCandleTypes
         bool        _forex;
         void        CCandlePatterns();
         void        ~CCandlePatterns();
-        bool        ReversalPatterns(TREND &trend);
+        bool        ReversalPatterns(bool bull);
         bool        BullishReversals(CANDLE_STRUCTURE &cand1);        
         bool        BearishReversals(CANDLE_STRUCTURE &cand1);
         bool        BullishReversals(CANDLE_STRUCTURE &cand1, CANDLE_STRUCTURE &cand2);
@@ -50,7 +50,7 @@ void CCandlePatterns::CCandlePatterns(void) {
 void CCandlePatterns::~CCandlePatterns(void) {};
 
 // Function for checking possible reversals
-bool CCandlePatterns::ReversalPatterns(TREND &trend) 
+bool CCandlePatterns::ReversalPatterns(bool bull) 
 {
 
     if(global.LIVE_MARKET && !SeriesInfoInteger(_Symbol , 0, SERIES_SYNCHRONIZED)) return false;
@@ -58,7 +58,7 @@ bool CCandlePatterns::ReversalPatterns(TREND &trend)
     CANDLE_STRUCTURE cand1;
     if(!RecognizeCandle(PERIOD_CURRENT, 1, global.NO_OF_CANDLES, cand1)) return false;
 
-    if(trend == BULLISH) 
+    if(bull) 
     {
         BullishReversals(cand1);
     }

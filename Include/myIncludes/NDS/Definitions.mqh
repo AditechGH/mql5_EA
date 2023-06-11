@@ -48,17 +48,7 @@ enum ENTRY_BIAS
     SHORT_ENTRY                             // short entry
 };
 
-//--- @file [PriceAction.mqh]  
-//+------------------------------------------------------------------+
-//|  @enum CANDLE TYPE                                               |
-//+------------------------------------------------------------------+
-enum TREND
-{
-    BULLISH,                                // bullish direction
-    BEARISH                                 // bearish direction 
-};
-
-//--- @file [CandlePatterns.mqh]  
+//--- @file [CandleTypes.mqh]  
 //+------------------------------------------------------------------+
 //|  @enum CANDLESTICK TYPE                                          |
 //+------------------------------------------------------------------+
@@ -70,13 +60,15 @@ enum TYPE_CANDLESTICK
     CAND_DOJI,                              // Doji
     CAND_SPIN_TOP,                          // Spins
     CAND_HAMMER,                            // Hammer
-    CAND_INVERT_HAMMER,                     // Inverted Hammer
+    CAND_HAMMER_LONG,                       // Hammer
+    CAND_INVERT_HAMMER,                     // Inverted Hammer long
+    CAND_INVERT_HAMMER_LONG,                // Inverted Hammer long
     CAND_LONG,                              // Long
     CAND_SHORT,                             // Short
     CAND_STAR                               // Star
 };
 
-//--- @file [CandlePatterns.mqh]    
+//--- @file [CandleTypes.mqh]    
 //+------------------------------------------------------------------+
 //|  @enum TYPE_TREND                                                |
 //+------------------------------------------------------------------+
@@ -89,24 +81,6 @@ enum TYPE_TREND
 
 //--- @file [PriceAction.mqh]  
 //+------------------------------------------------------------------+
-//|  @struct CANDLE INFORMATION                                      |
-//+------------------------------------------------------------------+
-struct BAR_INFO
-{
-    datetime         TIME;                  // open time 
-    double           OPEN;                  // body open
-    double           CLOSE;                 // body close
-    double           HIGH;                  // The highest price of the period
-    double           LOW;                   // The lowest price of the period
-    double           BODY_RANGE;            // candle body range
-    double           LOW_WICK_RANGE;        // candle low wick range
-    double           HIGH_WICK_RANGE;       // candle high wick range
-    long             VOLUME;                // candle bar volume
-    TREND            DIRECTION;             // bullish/bearish
-};
-
-//--- @file [PriceAction.mqh]  
-//+------------------------------------------------------------------+
 //|  @struct TIMEFRAME                                               |
 //+------------------------------------------------------------------+
 struct TIMEFRAME
@@ -115,32 +89,6 @@ struct TIMEFRAME
     ENUM_TIMEFRAMES  LOW_TIMEFRAME;         // default low timeframe
 
     TIMEFRAME(): HIGH_TIMEFRAME(PERIOD_H4), LOW_TIMEFRAME(PERIOD_M5) {};
-};
-
-//--- @file [PriceAction.mqh]  
-//+------------------------------------------------------------------+
-//|  @struct RANGE                                                   |
-//+------------------------------------------------------------------+
-struct RANGE
-{
-    const ushort    PREV_MAX_WICK_RANGE;    // bais is set if previous bar wick is not longer than max range
-    const ushort    PREV_MIN_BODY_RANGE;    // bais is set if previous bar body is bigger than min body range
-    const ushort    CURR_MAX_WICK_RANGE;    // entry is considered if current wick range is not longer than max range
-    const ushort    CURR_MIN_WICK_RANGE;    // entry is considered ig current wick range is longer than min range
-
-    RANGE(): PREV_MAX_WICK_RANGE(500), PREV_MIN_BODY_RANGE(300), CURR_MAX_WICK_RANGE(250), CURR_MIN_WICK_RANGE(70) {};   
-};
-
-//--- @file [PriceAction.mqh]  
-//+------------------------------------------------------------------+
-//|  @struct BAR INDEX                                               |
-//+------------------------------------------------------------------+
-struct BAR_INDEX
-{
-    const char      PREVIOUS_BAR_IDX;       // previous bar index = 1
-    const char      CURRENT_BAR_IDX;        // current bar index  = 0
-
-    BAR_INDEX(): PREVIOUS_BAR_IDX(1), CURRENT_BAR_IDX(0) {};   
 };
 
 //--- @file [PriceAction.mqh]  
@@ -189,6 +137,8 @@ struct GLOBAL
     int              NO_OF_CANDLES;         // Number of candles
     int              HIGH_BARS;             // High timeframe open candle
     int              LOW_BARS;              // Low timeframe open candle
+    bool             long_position_flag;
+    bool             short_position_flag;   
 };
 
 GLOBAL global = { false, false, 0, 0, 0 };
