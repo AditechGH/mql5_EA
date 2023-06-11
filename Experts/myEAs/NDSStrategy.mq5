@@ -82,7 +82,7 @@ void OnTick()
 {
 
     // get current tick
-    previous_tick = current_tick;
+    previous_tick = current_tick; 
     SymbolInfoTick(_Symbol, current_tick);
 
    // high timeframe 
@@ -107,12 +107,9 @@ void OnTick()
    if(pa.entry_bias == NO_ENTRY) return;
 
    // reversal candle patterns
-   cPtns.ReversalPatterns(pa.previous_bar.DIRECTION);
+   cPtns.ReversalPatterns(pa.prev_candle.bull);
 
-   // check current bar on high time frame for a wick pullback
-   pa.CheckCurrentBar(pa.timeframe.HIGH_TIMEFRAME);
-
-   if (pa.entry_bias != NO_ENTRY && pa.previous_bar.DIRECTION == BULLISH) {
+   if (pa.entry_bias != NO_ENTRY && pa.prev_candle.bull) {
       if (current_tick.ask < pa.retracement.PRICE_ONE && current_tick.ask > pa.retracement.PRICE_FOUR){
          if (current_tick.ask < pa.stop_price) {
             pa.stop_price = current_tick.ask;
@@ -122,7 +119,7 @@ void OnTick()
       }
    }
 
-   if (pa.entry_bias != NO_ENTRY && pa.previous_bar.DIRECTION == BEARISH) {
+   if (pa.entry_bias != NO_ENTRY && !pa.prev_candle.bull) {
       if (current_tick.bid > pa.retracement.PRICE_ONE && current_tick.ask < pa.retracement.PRICE_FOUR){
          if (current_tick.bid > pa.stop_price) {
             pa.stop_price = current_tick.bid;
@@ -250,7 +247,7 @@ void PlaceOrder()
    double lot = InputVolume;
  
    // open long position
-   if (pa.long_position_flag && trade.CountOpenPositions(InputMagicNumber) == 0 && trade.CountPendingOrders(InputMagicNumber) == 0 && open_time != iTime(_Symbol, PERIOD_CURRENT, 0)) 
+   if (global.long_position_flag && trade.CountOpenPositions(InputMagicNumber) == 0 && trade.CountPendingOrders(InputMagicNumber) == 0 && open_time != iTime(_Symbol, PERIOD_CURRENT, 0)) 
    {
       open_time = iTime(_Symbol, PERIOD_CURRENT, 0);
       // no instant entry
@@ -266,8 +263,8 @@ void PlaceOrder()
       pa.entry_bias = NO_ENTRY;
    }
 
-   // open short position
-   if (pa.short_position_flag && trade.CountOpenPositions(InputMagicNumber) == 0 && trade.CountPendingOrders(InputMagicNumber) == 0 && open_time != iTime(_Symbol, PERIOD_CURRENT, 0)) 
+   // open short position 
+   if (global.short_position_flag && trade.CountOpenPositions(InputMagicNumber) == 0 && trade.CountPendingOrders(InputMagicNumber) == 0 && open_time != iTime(_Symbol, PERIOD_CURRENT, 0)) 
    {
       open_time = iTime(_Symbol, PERIOD_CURRENT, 0);
       // no instant entry
@@ -290,7 +287,7 @@ void ClosePositions() {
 
    if (trade.CountOpenPositions(InputMagicNumber) == 0) return;
 
-   if (!pa.long_position_flag && !pa.short_position_flag) return;
+   if (!global.long_position_flag && !global.short_position_flag) return;
 
    datetime hours[];
    double profit = AccountInfoDouble(ACCOUNT_PROFIT);
@@ -318,9 +315,7 @@ void CancelOrders() {
       if(pa.entry_bias != NO_ENTRY) close_order = true;
 
       // pull back wick continues backward
-      if((pa.long_position_flag && pa.current_bar.LOW_WICK_RANGE > pa.range.CURR_MAX_WICK_RANGE) || // ::TODO:: change to cancel order if pending order stop loss is crossed.
-         (pa.short_position_flag && pa.current_bar.HIGH_WICK_RANGE > pa.range.CURR_MAX_WICK_RANGE)) 
-            close_order = true;
+      // ::TODO:: change to cancel order if pending order stop loss is crossed. 
 
       //close all open orders
       if(close_order) {
@@ -334,6 +329,6 @@ void CancelOrders() {
 
 void resetEntry() {
    pa.entry_bias = NO_ENTRY;
-   pa.long_position_flag = false;
-   pa.short_position_flag = false;
+   global.long_position_flag = false;
+   global.short_position_flag = false;
 }
